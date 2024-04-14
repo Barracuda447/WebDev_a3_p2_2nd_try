@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilizing External Files</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="index.js"></script>
+</head>
+<body>
+    <header>
+        Utilizing External Files
+    </header>
+    <div class="container">
+        <div class="column">
+            <h2>Load XML Data</h2>
+            <button onclick="loadXml('name')">Load Name</button>
+            <button onclick="loadXml('age')">Load Age</button>
+            <button onclick="loadXml('number')">Load Number</button>
+            <ul id="xmlOutput"></ul>
+        </div>
+        <div class="column">
+            <h2>Load JSON Data</h2>
+            <button onclick="loadJson('name')">Load Name</button>
+            <button onclick="loadJson('age')">Load Age</button>
+            <button onclick="loadJson('number')">Load Number</button>
+            <ul id="jsonOutput"></ul>
+        </div>
+    </div>
+
+    <script>
+        function loadXml(property) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var xmlDoc = this.responseXML;
+                    var output = '';
+                    var items = xmlDoc.getElementsByTagName("person");
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        output += '<li>' + item.getElementsByTagName(property)[0].childNodes[0].nodeValue + '</li>';
+                    }
+                    document.getElementById("xmlOutput").innerHTML = output;
+                }
+            };
+            xhttp.open("GET", "ajax.xml", true);
+            xhttp.send();
+        }
+
+        function loadJson(property) {
+            $.getJSON('ajax.json', function(data){
+                var output = '';
+                $.each(data.people, function(i, person){
+                    output += '<li>' + person[property] + '</li>';
+                });
+                $('#jsonOutput').html(output);
+            });
+        }
+    </script>
+</body>
+<footer>
+    &copy; 2024 Edmonton Oilers, by Colby Pye
+</footer>
+</html>
